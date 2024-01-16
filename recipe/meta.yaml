@@ -40,7 +40,7 @@ test:
   commands:
     - cd native/tests
     - cmake . -DSEAL_BUILD_DEPS=OFF
-    - cmake --build . -- -j ${CPU_COUNT}
+    - cmake --build .
     - ./bin/sealtest  # [not win]
     - .\bin\sealtest  # [win]
 
