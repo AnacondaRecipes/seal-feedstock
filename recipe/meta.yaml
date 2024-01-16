@@ -1,0 +1,58 @@
+{% set name = "seal" %}
+{% set version = "4.1.1" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/microsoft/SEAL/archive/refs/tags/v4.1.1.tar.gz
+  sha256: af9bf0f0daccda2a8b7f344f13a5692e0ee6a45fea88478b2b90c35648bf2672
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - make  # [not win]
+  host:
+    - zlib {{ zlib }}
+    - zstd {{ zstd }}
+    - ms-gsl 4.0.0
+  run:
+    - ms-gsl 4.0.0
+    - zlib  # pin through run_exports
+    - zstd  # pin through run_exports
+
+test:
+  source_files:
+    - native/tests
+    - cmake/SEALMacros.cmake
+  requires:
+    - cmake
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - make  # [not win]
+    - gtest
+  commands:
+    - cd native/tests
+    - cmake . -DSEAL_BUILD_DEPS=OFF
+    - cmake --build . -- -j ${CPU_COUNT}
+    - ./bin/sealtest  # [not win]
+    - .\bin\sealtest  # [win]
+
+about:
+  home: https://github.com/microsoft/SEAL
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Microsoft SEAL is an easy-to-use and powerful homomorphic encryption library.
+  description: |
+    Microsoft SEAL is an easy-to-use open-source (MIT licensed) homomorphic encryption library
+    developed by the Cryptography and Privacy Research Group at Microsoft. Microsoft SEAL is written
+    in modern standard C++ and is easy to compile and run in many different environments.
+  doc_url: https://github.com/microsoft/SEAL
+  dev_url: https://github.com/microsoft/SEAL
