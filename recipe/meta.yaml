@@ -11,6 +11,8 @@ source:
 
 build:
   number: 0
+  ignore_run_exports:
+    - gtest
 
 requirements:
   build:
@@ -22,27 +24,23 @@ requirements:
     - zlib {{ zlib }}
     - zstd {{ zstd }}
     - ms-gsl 4.0.0
+    - gtest
   run:
     - ms-gsl 4.0.0
     - zlib  # pin through run_exports
     - zstd  # pin through run_exports
 
 test:
-  source_files:
-    - native/tests
-    - cmake/SEALMacros.cmake
-  requires:
-    - cmake
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
-    - make  # [not win]
-    - gtest
   commands:
-    - cd native/tests
-    - cmake . -DSEAL_BUILD_DEPS=OFF
-    - cmake --build .
-    - ./bin/sealtest  # [not win]
-    - .\bin\sealtest  # [win]
+    - test -f ${PREFIX}/lib/libseal-4.1.a  # [unix]
+    - test -d ${PREFIX}/include/SEAL-4.1/seal  # [unix]
+    - test -f ${PREFIX}/include/SEAL-4.1/seal/seal.h  # [unix]
+    - test -f ${PREFIX}/lib/cmake/SEAL-4.1/SEALConfig.cmake  # [unix]
+    - test -f ${PREFIX}/lib/cmake/SEAL-4.1/SEALConfigVersion.cmake  # [unix]
+    - if not exist %LIBRARY_PREFIX%\lib\libseal-4.1.lib (exit 1)  # [win]
+    - if not exist %LIBRARY_PREFIX%\include\SEAL-4.1\seal (exit 1)  # [win]
+    - if not exist %LIBRARY_PREFIX%\lib\cmake\SEAL-4.1\SEALConfig.cmake (exit 1)  # [win]
+    - if not exist %LIBRARY_PREFIX%\lib\cmake\SEAL-4.1\SEALConfigVersion.cmake (exit 1)  # [win]
 
 about:
   home: https://github.com/microsoft/SEAL
