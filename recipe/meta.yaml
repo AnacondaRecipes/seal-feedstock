@@ -19,7 +19,7 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - cmake
-    - make  # [not win]
+    - ninja
   host:
     - zlib {{ zlib }}
     - zstd {{ zstd }}
@@ -37,7 +37,7 @@ test:
     - test -f ${PREFIX}/include/SEAL-4.1/seal/seal.h  # [unix]
     - test -f ${PREFIX}/lib/cmake/SEAL-4.1/SEALConfig.cmake  # [unix]
     - test -f ${PREFIX}/lib/cmake/SEAL-4.1/SEALConfigVersion.cmake  # [unix]
-    - if not exist %LIBRARY_PREFIX%\lib\libseal-4.1.lib (exit 1)  # [win]
+    - if not exist %LIBRARY_PREFIX%\lib\seal-4.1.lib (exit 1)  # [win]
     - if not exist %LIBRARY_PREFIX%\include\SEAL-4.1\seal (exit 1)  # [win]
     - if not exist %LIBRARY_PREFIX%\lib\cmake\SEAL-4.1\SEALConfig.cmake (exit 1)  # [win]
     - if not exist %LIBRARY_PREFIX%\lib\cmake\SEAL-4.1\SEALConfigVersion.cmake (exit 1)  # [win]
