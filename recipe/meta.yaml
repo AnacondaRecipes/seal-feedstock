@@ -1,0 +1,56 @@
+{% set name = "seal" %}
+{% set version = "4.1.1" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/microsoft/SEAL/archive/refs/tags/v4.1.1.tar.gz
+  sha256: af9bf0f0daccda2a8b7f344f13a5692e0ee6a45fea88478b2b90c35648bf2672
+
+build:
+  number: 0
+  ignore_run_exports:
+    - gtest
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - ninja
+  host:
+    - zlib {{ zlib }}
+    - zstd {{ zstd }}
+    - ms-gsl 4.0.0
+    - gtest
+  run:
+    - ms-gsl 4.0.0
+    - zlib  # pin through run_exports
+    - zstd  # pin through run_exports
+
+test:
+  commands:
+    - test -f ${PREFIX}/lib/libseal-4.1.a  # [unix]
+    - test -d ${PREFIX}/include/SEAL-4.1/seal  # [unix]
+    - test -f ${PREFIX}/include/SEAL-4.1/seal/seal.h  # [unix]
+    - test -f ${PREFIX}/lib/cmake/SEAL-4.1/SEALConfig.cmake  # [unix]
+    - test -f ${PREFIX}/lib/cmake/SEAL-4.1/SEALConfigVersion.cmake  # [unix]
+    - if not exist %LIBRARY_PREFIX%\lib\seal-4.1.lib (exit 1)  # [win]
+    - if not exist %LIBRARY_PREFIX%\include\SEAL-4.1\seal (exit 1)  # [win]
+    - if not exist %LIBRARY_PREFIX%\lib\cmake\SEAL-4.1\SEALConfig.cmake (exit 1)  # [win]
+    - if not exist %LIBRARY_PREFIX%\lib\cmake\SEAL-4.1\SEALConfigVersion.cmake (exit 1)  # [win]
+
+about:
+  home: https://github.com/microsoft/SEAL
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Microsoft SEAL is an easy-to-use and powerful homomorphic encryption library.
+  description: |
+    Microsoft SEAL is an easy-to-use open-source (MIT licensed) homomorphic encryption library
+    developed by the Cryptography and Privacy Research Group at Microsoft. Microsoft SEAL is written
+    in modern standard C++ and is easy to compile and run in many different environments.
+  doc_url: https://github.com/microsoft/SEAL
+  dev_url: https://github.com/microsoft/SEAL
